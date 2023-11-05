@@ -31,6 +31,23 @@ impl<T, const N: usize> Vector<T, N> {
     pub fn new(components: [T; N]) -> Self {
         Self { components }
     }
+
+    pub fn zero() -> Self
+    where
+        T: Num + Copy,
+    {
+        Self {
+            components: [T::zero(); N],
+        }
+    }
+}
+
+impl<T: Default + Copy, const N: usize> Default for Vector<T, N> {
+    fn default() -> Self {
+        Self {
+            components: [T::default(); N],
+        }
+    }
 }
 
 impl<T: Num + Copy, const N: usize> Vector<T, N> {
