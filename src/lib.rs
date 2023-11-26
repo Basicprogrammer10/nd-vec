@@ -24,7 +24,7 @@ pub struct Vector<T, const N: usize> {
 
 /// Create a new vector with the given components.
 /// ```rust
-/// # use vector::vector;
+/// # use nd_vec::{Vector, vector};
 /// vector!(1, 2, 3);
 /// ```
 #[macro_export]
@@ -37,7 +37,7 @@ macro_rules! vector {
 impl<T, const N: usize> Vector<T, N> {
     /// Create a new vector with the given components.
     /// ```rust
-    /// # use vector::Vector;
+    /// # use nd_vec::Vector;
     /// Vector::new([1, 2, 3]);
     /// ```
     pub fn new(components: [T; N]) -> Self {
