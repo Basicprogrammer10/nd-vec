@@ -1,5 +1,3 @@
-#![feature(decl_macro)]
-
 use std::{
     fmt::{Debug, Display},
     iter::Sum,
@@ -29,8 +27,11 @@ pub struct Vector<T, const N: usize> {
 /// # use vector::vector;
 /// vector!(1, 2, 3);
 /// ```
-pub macro vector($($x:expr),*) {
-    Vector::new([$($x),*])
+#[macro_export]
+macro_rules! vector {
+    ($($x:expr),*) => {
+        Vector::new([$($x),*])
+    };
 }
 
 impl<T, const N: usize> Vector<T, N> {
@@ -170,30 +171,32 @@ impl<T: Num + Copy, const N: usize> FromIterator<T> for Vector<T, N> {
     }
 }
 
-macro bin_op($trait:tt, $func:ident) {
-    impl<T: Num + Copy, const N: usize> $trait for Vector<T, N> {
-        type Output = Self;
+macro_rules! bin_op {
+    ($trait:tt, $func:ident) => {
+        impl<T: Num + Copy, const N: usize> $trait for Vector<T, N> {
+            type Output = Self;
 
-        fn $func(self, other: Self) -> Self::Output {
-            let mut components = [T::zero(); N];
-            for (i, e) in components.iter_mut().enumerate() {
-                *e = self.components[i].$func(other.components[i]);
+            fn $func(self, other: Self) -> Self::Output {
+                let mut components = [T::zero(); N];
+                for (i, e) in components.iter_mut().enumerate() {
+                    *e = self.components[i].$func(other.components[i]);
+                }
+                Self { components }
             }
-            Self { components }
         }
-    }
 
-    impl<T: Num + Copy, const N: usize> $trait<T> for Vector<T, N> {
-        type Output = Self;
+        impl<T: Num + Copy, const N: usize> $trait<T> for Vector<T, N> {
+            type Output = Self;
 
-        fn $func(self, other: T) -> Self::Output {
-            let mut components = [T::zero(); N];
-            for (i, e) in components.iter_mut().enumerate() {
-                *e = self.components[i].$func(other);
+            fn $func(self, other: T) -> Self::Output {
+                let mut components = [T::zero(); N];
+                for (i, e) in components.iter_mut().enumerate() {
+                    *e = self.components[i].$func(other);
+                }
+                Self { components }
             }
-            Self { components }
         }
-    }
+    };
 }
 
 bin_op!(Add, add);
