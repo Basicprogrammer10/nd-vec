@@ -8,8 +8,8 @@ authors = ["Connor Slade"]
 repository = "https://github.com/Basicprogrammer10/nd-vec"
 license-file = "LICENSE"
 exclude = [".github"]
-categories = ["network-programming", "web-programming::http-server"]
-keywords = ["afire", "http", "WebFramework", "WebServer"]
+categories = ["Mathematics", "science"]
+keywords = ["nd-vec", "n-dimensional", "vector"]
 
 [dependencies]
 num-traits = "0.2.17"
