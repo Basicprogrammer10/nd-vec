@@ -1,9 +1,15 @@
 [package]
-name = "vector"
+name = "nd_vec"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "A compile time n-dimensional vector library."
+authors = ["Connor Slade"]
+repository = "https://github.com/Basicprogrammer10/nd-vec"
+license-file = "LICENSE"
+exclude = [".github"]
+categories = ["network-programming", "web-programming::http-server"]
+keywords = ["afire", "http", "WebFramework", "WebServer"]
 
 [dependencies]
 num-traits = "0.2.17"
