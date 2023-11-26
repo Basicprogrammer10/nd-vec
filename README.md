@@ -3,7 +3,7 @@
 A compile time n-dimensional vector library.
 
 ```rust
-use nd_vec::{Vector, vector};
+use nd_vec::vector;
 
 let a = vector!(1, 2, 3);
 let b = vector!(4, 5, 6);
