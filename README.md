@@ -1,4 +1,4 @@
-# nd-vec [![Build](https://github.com/Basicprogrammer10/nd-vec/actions/workflows/rust.yml/badge.svg)](https://github.com/Basicprogrammer10/nd-vec/actions/workflows/rust.yml)
+# nd-vec [![Build](https://github.com/Basicprogrammer10/nd-vec/actions/workflows/rust.yml/badge.svg)](https://github.com/Basicprogrammer10/nd-vec/actions/workflows/rust.yml) [![Crates.io](https://img.shields.io/crates/v/nd-vec)](https://crates.io/crates/nd-vec)
 
 A compile time n-dimensional vector library.
 

@@ -10,6 +10,7 @@
 - Allow getting vector as a component slice
 - Absolute value function
 - Allow accessing components on 2D and 3D vectors with `.x()`, `.y()`, and `.x()` if applicable
+- Add the `documentation` attribute to the Cargo.toml
 
 ## v0.2.0 &ndash; November 26, 2023
 

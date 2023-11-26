@@ -6,6 +6,7 @@ edition = "2021"
 description = "A compile time n-dimensional vector library."
 authors = ["Connor Slade"]
 repository = "https://github.com/Basicprogrammer10/nd-vec"
+documentation = "https://docs.rs/nd_vec"
 license-file = "LICENSE"
 exclude = [".github"]
 categories = ["mathematics", "science"]
