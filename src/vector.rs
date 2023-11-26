@@ -1,7 +1,8 @@
 use std::{
     fmt::{Debug, Display},
+    hash::Hash,
     iter::Sum,
-    ops::{Add, Div, Mul, Neg, Rem, Sub},
+    ops::{Add, AddAssign, Div, DivAssign, Mul, Neg, Rem, RemAssign, Sub, SubAssign},
 };
 
 use num_traits::{real::Real, Num};
@@ -199,6 +200,23 @@ bin_op!(Sub, sub);
 bin_op!(Div, div);
 bin_op!(Rem, rem);
 
+macro_rules! assign_op {
+    ($trait:tt, $func:ident, $op:expr) => {
+        impl<T: Num + Copy, const N: usize> $trait for Vector<T, N> {
+            fn $func(&mut self, rhs: Self) {
+                for (i, e) in self.components.iter_mut().enumerate() {
+                    *e = ($op)(*e, rhs.components[i]);
+                }
+            }
+        }
+    };
+}
+
+assign_op!(AddAssign, add_assign, |a, b| a + b);
+assign_op!(SubAssign, sub_assign, |a, b| a - b);
+assign_op!(DivAssign, div_assign, |a, b| a / b);
+assign_op!(RemAssign, rem_assign, |a, b| a % b);
+
 impl<T: Num + Copy, const N: usize> Neg for Vector<T, N> {
     type Output = Self;
 
@@ -230,5 +248,40 @@ impl<T: Num + Copy + Send + Sync, const N: usize> Mul<T> for Vector<T, N> {
             *e = self.components[i] * rhs;
         }
         Self { components }
+    }
+}
+
+impl<T: Hash, const N: usize> Hash for Vector<T, N> {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.components.hash(state);
+    }
+}
+
+impl<T: Copy> Vector<T, 2> {
+    #[inline(always)]
+    pub fn x(&self) -> T {
+        self.components[0]
+    }
+
+    #[inline(always)]
+    pub fn y(&self) -> T {
+        self.components[1]
+    }
+}
+
+impl<T: Copy> Vector<T, 3> {
+    #[inline(always)]
+    pub fn x(&self) -> T {
+        self.components[0]
+    }
+
+    #[inline(always)]
+    pub fn y(&self) -> T {
+        self.components[1]
+    }
+
+    #[inline(always)]
+    pub fn z(&self) -> T {
+        self.components[2]
     }
 }
