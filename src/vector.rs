@@ -5,7 +5,7 @@ use std::{
     ops::{Add, AddAssign, Div, DivAssign, Mul, Neg, Rem, RemAssign, Sub, SubAssign},
 };
 
-use num_traits::{real::Real, Num};
+use num_traits::{real::Real, Num, Signed};
 
 /// A compile-time n-dimensional vector, how fancy!
 #[derive(Clone)]
@@ -48,6 +48,11 @@ impl<T, const N: usize> Vector<T, N> {
         Self {
             components: [T::zero(); N],
         }
+    }
+
+    /// Returns the components of the vector as a slice.
+    pub fn as_slice(&self) -> &[T] {
+        &self.components
     }
 }
 
@@ -144,6 +149,17 @@ impl<T: Num + Copy + Sum + Real, const N: usize> Vector<T, N> {
     }
 }
 
+impl<T: Num + Signed + Copy, const N: usize> Vector<T, N> {
+    /// Calculates the absolute value of each component of a vector.
+    pub fn abs(&self) -> Self {
+        let mut components = [T::zero(); N];
+        for (i, e) in components.iter_mut().enumerate() {
+            *e = self.components[i].abs();
+        }
+        Self { components }
+    }
+}
+
 impl<T: Num + Copy + Display, const N: usize> Debug for Vector<T, N> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let components = self.components.map(|x| x.to_string()).join(", ");
@@ -201,21 +217,21 @@ bin_op!(Div, div);
 bin_op!(Rem, rem);
 
 macro_rules! assign_op {
-    ($trait:tt, $func:ident, $op:expr) => {
+    ($trait:tt, $func:ident, $op:ident) => {
         impl<T: Num + Copy, const N: usize> $trait for Vector<T, N> {
             fn $func(&mut self, rhs: Self) {
                 for (i, e) in self.components.iter_mut().enumerate() {
-                    *e = ($op)(*e, rhs.components[i]);
+                    *e = e.$op(rhs.components[i]);
                 }
             }
         }
     };
 }
 
-assign_op!(AddAssign, add_assign, |a, b| a + b);
-assign_op!(SubAssign, sub_assign, |a, b| a - b);
-assign_op!(DivAssign, div_assign, |a, b| a / b);
-assign_op!(RemAssign, rem_assign, |a, b| a % b);
+assign_op!(AddAssign, add_assign, add);
+assign_op!(SubAssign, sub_assign, sub);
+assign_op!(DivAssign, div_assign, div);
+assign_op!(RemAssign, rem_assign, rem);
 
 impl<T: Num + Copy, const N: usize> Neg for Vector<T, N> {
     type Output = Self;
