@@ -82,8 +82,8 @@ impl<T: Copy, const N: usize> Vector<T, N> {
     /// Allows casting each component of the vector using the [TryFrom](https://doc.rust-lang.org/std/convert/trait.TryFrom.html) trait.
     /// If the cast fails, an error is returned.
     ///
-    /// In many cases [`num_cast`] is more versatile as it supports more conversions.
-    /// For example `u32` to `f32` is supported by [`num_cast`] but not by [`try_cast`].
+    /// In many cases [`Vector::num_cast`] is more versatile as it supports more conversions.
+    /// For example `u32` to `f32` is supported by [`Vector::num_cast`] but not by [`Vector::try_cast`].
     ///
     /// ```rust
     /// # use nd_vec::{Vector, vector};
@@ -104,8 +104,8 @@ impl<T: Copy, const N: usize> Vector<T, N> {
 
     /// Casts each component of the vector to the given type.
     ///
-    /// This is equivalent to [`try_cast`] but only works if the cast is infallible.
-    /// Because of this, it should be preferred over [`try_cast`] when casting from smaller to larger types.
+    /// This is similar to [`Vector::try_cast`] but only works if the cast is infallible.
+    /// Because of this, it should be preferred over [`Vector::try_cast`] when casting from smaller to larger types.
     pub fn cast<K: Num + Copy + From<T>>(&self) -> Vector<K, N> {
         let mut components = [K::zero(); N];
         for (i, e) in self.components.iter().enumerate() {
