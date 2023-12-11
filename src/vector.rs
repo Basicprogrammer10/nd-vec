@@ -5,7 +5,7 @@ use std::{
     ops::{Add, AddAssign, Div, DivAssign, Mul, Neg, Rem, RemAssign, Sub, SubAssign},
 };
 
-use num_traits::{real::Real, Num, Signed};
+use num_traits::{real::Real, Num, NumCast, Signed, ToPrimitive};
 
 /// A compile-time n-dimensional vector, how fancy!
 #[derive(Clone)]
@@ -53,6 +53,43 @@ impl<T, const N: usize> Vector<T, N> {
     /// Returns the components of the vector as a slice.
     pub fn as_slice(&self) -> &[T] {
         &self.components
+    }
+}
+
+impl<T: Copy, const N: usize> Vector<T, N> {
+    /// Allows numerically casting each component of the vector.
+    /// ```rust
+    /// # use nd_vec::{Vector, vector};
+    /// let vec = vector!(1, 2, 3);
+    /// vec.num_cast::<isize>().unwrap();
+    /// ```
+    pub fn num_cast<K: Num + Copy + NumCast>(&self) -> Option<Vector<K, N>>
+    where
+        T: ToPrimitive,
+    {
+        let mut components = [K::zero(); N];
+        for (i, e) in self.components.iter().enumerate() {
+            components[i] = K::from(*e)?;
+        }
+        Some(Vector { components })
+    }
+
+    pub fn try_cast<K: Num + Copy + TryFrom<T>>(
+        &self,
+    ) -> Result<Vector<K, N>, <K as TryFrom<T>>::Error> {
+        let mut components = [K::zero(); N];
+        for (i, e) in self.components.iter().enumerate() {
+            components[i] = K::try_from(*e)?;
+        }
+        Ok(Vector { components })
+    }
+
+    pub fn cast<K: Num + Copy + From<T>>(&self) -> Vector<K, N> {
+        let mut components = [K::zero(); N];
+        for (i, e) in self.components.iter().enumerate() {
+            components[i] = K::from(*e);
+        }
+        Vector { components }
     }
 }
 
@@ -106,7 +143,7 @@ impl<T: Num + Copy + Ord, const N: usize> Vector<T, N> {
     }
 }
 
-impl<T: Num + Copy + Real, const N: usize> Vector<T, N> {
+impl<T: Num + Copy + Signed, const N: usize> Vector<T, N> {
     /// Calculates the sign of each component of a vector.
     /// This is -1 if the component is negative, 0 if it is zero, and 1 if it is positive.
     pub fn signum(&self) -> Self {
@@ -116,9 +153,26 @@ impl<T: Num + Copy + Real, const N: usize> Vector<T, N> {
         }
         Self { components }
     }
+
+    /// Calculates the [Manhattan Distance](https://en.wikipedia.org/wiki/Taxicab_geometry#Formal_definition) of  two vectors.
+    pub fn manhattan_distance(&self, other: &Self) -> T {
+        let mut out = T::zero();
+        for (&a, &b) in self.components.iter().zip(other.components.iter()) {
+            out = out + (a - b).abs();
+        }
+        out
+    }
 }
 
 impl<T: Num + Copy + Sum, const N: usize> Vector<T, N> {
+    pub fn sum(&self) -> T {
+        let mut acc = T::zero();
+        for i in self.components {
+            acc = acc + i;
+        }
+        acc
+    }
+
     /// Calculates the sum of all squared components.
     /// Used for calculating the magnitude of a vector.
     pub fn magnitude_squared(&self) -> T {
@@ -146,6 +200,10 @@ impl<T: Num + Copy + Sum + Real, const N: usize> Vector<T, N> {
     /// This is the vector divided by its magnitude.
     pub fn normalize(&self) -> Self {
         *self / self.magnitude()
+    }
+
+    pub fn distance(&self, other: &Self) -> T {
+        (*self - *other).magnitude()
     }
 }
 
