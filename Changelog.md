@@ -1,5 +1,7 @@
 # nd-vec Changelog
 
+## v0.4.0 &ndash; Coming Soon
+
 ## v0.3.0 &ndash; November 26, 2023
 
 - Impl assigning operations

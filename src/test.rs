@@ -45,3 +45,20 @@ fn test_product() {
     assert_eq!(a.dot(&b), 32);
     assert_eq!(a.hadamard_product(&b), vector!(4, 10, 18));
 }
+
+#[test]
+fn test_distance() {
+    let a = vector!(1.0, 2.0, 3.0);
+    let b = vector!(4.0, 5.0, 6.0);
+    assert_eq!(a.manhattan_distance(&b), 9.0);
+    assert_eq!(a.distance(&b), 5.196152422706632);
+}
+
+#[test]
+fn test_cast() {
+    let a = vector!(1.0, 2.0, 3.0);
+    let b = vector!(1, 2, 3);
+
+    assert_eq!(a.num_cast().unwrap(), b);
+    assert_eq!(b.cast(), a);
+}

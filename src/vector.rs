@@ -58,10 +58,15 @@ impl<T, const N: usize> Vector<T, N> {
 
 impl<T: Copy, const N: usize> Vector<T, N> {
     /// Allows numerically casting each component of the vector.
+    /// Makes use of the [num_traits::NumCast](https://docs.rs/num-traits/0.2.14/num_traits/cast/trait.NumCast.html) trait.
+    /// If the cast fails, None is returned.
+    ///
     /// ```rust
     /// # use nd_vec::{Vector, vector};
-    /// let vec = vector!(1, 2, 3);
-    /// vec.num_cast::<isize>().unwrap();
+    /// let a = vector!(1.0, 2.0, 3.0);
+    /// let b = vector!(1, 2, 3);
+    ///
+    /// assert_eq!(a.num_cast::<i32>().unwrap(), b);
     /// ```
     pub fn num_cast<K: Num + Copy + NumCast>(&self) -> Option<Vector<K, N>>
     where
@@ -74,6 +79,19 @@ impl<T: Copy, const N: usize> Vector<T, N> {
         Some(Vector { components })
     }
 
+    /// Allows casting each component of the vector using the [TryFrom](https://doc.rust-lang.org/std/convert/trait.TryFrom.html) trait.
+    /// If the cast fails, an error is returned.
+    ///
+    /// In many cases [`num_cast`] is more versatile as it supports more conversions.
+    /// For example `u32` to `f32` is supported by [`num_cast`] but not by [`try_cast`].
+    ///
+    /// ```rust
+    /// # use nd_vec::{Vector, vector};
+    /// let a: Vector<u32, 3> = vector!(1, 2, 3);
+    /// let b: Vector<u8, 3> = vector!(1, 2, 3);
+    ///
+    /// assert_eq!(a.try_cast().unwrap(), b);
+    /// ```
     pub fn try_cast<K: Num + Copy + TryFrom<T>>(
         &self,
     ) -> Result<Vector<K, N>, <K as TryFrom<T>>::Error> {
@@ -84,6 +102,10 @@ impl<T: Copy, const N: usize> Vector<T, N> {
         Ok(Vector { components })
     }
 
+    /// Casts each component of the vector to the given type.
+    ///
+    /// This is equivalent to [`try_cast`] but only works if the cast is infallible.
+    /// Because of this, it should be preferred over [`try_cast`] when casting from smaller to larger types.
     pub fn cast<K: Num + Copy + From<T>>(&self) -> Vector<K, N> {
         let mut components = [K::zero(); N];
         for (i, e) in self.components.iter().enumerate() {
@@ -154,7 +176,7 @@ impl<T: Num + Copy + Signed, const N: usize> Vector<T, N> {
         Self { components }
     }
 
-    /// Calculates the [Manhattan Distance](https://en.wikipedia.org/wiki/Taxicab_geometry#Formal_definition) of  two vectors.
+    /// Calculates the [Manhattan Distance](https://en.wikipedia.org/wiki/Taxicab_geometry#Formal_definition) of two vectors.
     pub fn manhattan_distance(&self, other: &Self) -> T {
         let mut out = T::zero();
         for (&a, &b) in self.components.iter().zip(other.components.iter()) {
@@ -202,6 +224,7 @@ impl<T: Num + Copy + Sum + Real, const N: usize> Vector<T, N> {
         *self / self.magnitude()
     }
 
+    /// Calculates the [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) of two vectors.
     pub fn distance(&self, other: &Self) -> T {
         (*self - *other).magnitude()
     }
