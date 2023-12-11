@@ -10,6 +10,7 @@
 - Add Vector::distance to calculate the Euclidean Distance between two points
 - Add Vector::manhattan_distance to calculate the Manhattan Distance between points
 - Add Vector::sum to sum the values of all components
+- Add Vector::opposite to create a new vector with all components negated
 
 ## v0.3.0 &ndash; November 26, 2023
 

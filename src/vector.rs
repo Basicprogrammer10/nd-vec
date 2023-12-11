@@ -166,6 +166,16 @@ impl<T: Num + Copy + Ord, const N: usize> Vector<T, N> {
 }
 
 impl<T: Num + Copy + Signed, const N: usize> Vector<T, N> {
+    /// Calculates the opposite of a vector.
+    /// This is the vector with all components negated.
+    pub fn opposite(&self) -> Self {
+        let mut components = [T::zero(); N];
+        for (i, e) in components.iter_mut().enumerate() {
+            *e = -self.components[i];
+        }
+        Self { components }
+    }
+
     /// Calculates the sign of each component of a vector.
     /// This is -1 if the component is negative, 0 if it is zero, and 1 if it is positive.
     pub fn signum(&self) -> Self {
@@ -224,7 +234,7 @@ impl<T: Num + Copy + Sum + Real, const N: usize> Vector<T, N> {
         *self / self.magnitude()
     }
 
-    /// Calculates the [euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) of two vectors.
+    /// Calculates the [Euclidean Distance](https://en.wikipedia.org/wiki/Euclidean_distance) of two vectors.
     pub fn distance(&self, other: &Self) -> T {
         (*self - *other).magnitude()
     }
