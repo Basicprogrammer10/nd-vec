@@ -1,6 +1,15 @@
 # nd-vec Changelog
 
-## v0.4.0 &ndash; Coming Soon
+## v0.4.0 &ndash; December 11, 2023
+
+- Add component casting APIs
+  - `num_cast` &mdash; Numeric casts like with the `as` keyword
+  - `cast` &mdash; Casts with the Into trait
+  - `try_cast` &mdash; Casts with the TryInto trait
+- Reduce type requirements for Vector::signum from Floats to all Signed types
+- Add Vector::distance to calculate the Euclidean Distance between two points
+- Add Vector::manhattan_distance to calculate the Manhattan Distance between points
+- Add Vector::sum to sum the values of all components
 
 ## v0.3.0 &ndash; November 26, 2023
 
