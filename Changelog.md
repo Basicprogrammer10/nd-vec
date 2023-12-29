@@ -1,5 +1,9 @@
 # nd-vec Changelog
 
+## v0.4.1 &ndash; December 28, 2023
+
+- Make `Vector::new` constant
+
 ## v0.4.0 &ndash; December 11, 2023
 
 - Add component casting APIs
